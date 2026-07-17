@@ -3,7 +3,9 @@ import { ref, computed, onMounted } from 'vue'
 import scheduleApi from '../api/schedule'
 import { gameSeats, levelLabel } from '../utils/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import { useAuthStore } from '../stores/auth'
 
+const auth = useAuthStore()
 const GAMES = ref([])
 const GAME_FORMATS = ref([])
 const GAME_SYSTEMS = ref([])
@@ -13,6 +15,8 @@ const formatFilter = ref('all')
 const systemFilter = ref('all')
 const beginnersOnly = ref(false)
 const seatsOnly = ref(false)
+const signingUp = ref(false)
+const signupError = ref('')
 
 const filtered = computed(() =>
   GAMES.value.filter((g) => {
@@ -23,6 +27,30 @@ const filtered = computed(() =>
     return true
   }),
 )
+
+function isSignedUp(game) {
+  return game.signups?.some((s) => s.userId === auth.user?.id)
+}
+
+async function loadGames() {
+  GAMES.value = await scheduleApi.games()
+  if (selected.value) {
+    selected.value = GAMES.value.find((g) => g.id === selected.value.id) ?? null
+  }
+}
+
+async function toggleSignup(game) {
+  signupError.value = ''
+  signingUp.value = true
+  try {
+    await scheduleApi.toggleSignup(game.id)
+    await loadGames()
+  } catch (e) {
+    signupError.value = e.response?.data?.message || 'Не удалось записаться'
+  } finally {
+    signingUp.value = false
+  }
+}
 
 onMounted(async () => {
   try {
@@ -92,7 +120,18 @@ onMounted(async () => {
           <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Места</div><div style="font-size: 0.85rem" :style="{ color: gameSeats(selected).color }">{{ gameSeats(selected).label }}</div></div>
           <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Стоимость</div><div style="font-size: 0.85rem">{{ selected.price ? selected.price + ' ' + selected.currency : 'Бесплатно' }}</div></div>
         </div>
-        <div style="font-size: 0.75rem; color: var(--t3)">Возрастное ограничение: {{ selected.ageLimit }}</div>
+        <div style="font-size: 0.75rem; color: var(--t3); margin-bottom: 1rem">Возрастное ограничение: {{ selected.ageLimit }}</div>
+
+        <div v-if="signupError" class="alert alert-err">{{ signupError }}</div>
+        <button
+          class="btn btn-sm"
+          :class="isSignedUp(selected) ? 'btn-outline' : 'btn-primary'"
+          style="width: 100%; justify-content: center"
+          :disabled="signingUp || (!isSignedUp(selected) && selected.totalSeats - selected.bookedSeats <= 0)"
+          @click="toggleSignup(selected)"
+        >
+          {{ signingUp ? 'Сохраняем...' : isSignedUp(selected) ? '✓ Записан — отменить запись' : 'Записаться' }}
+        </button>
       </div>
     </template>
   </div>
