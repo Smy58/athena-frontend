@@ -1,15 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import shopApi from '../api/shop'
 import SkeletonCard from '../components/SkeletonCard.vue'
 
 const auth = useAuthStore()
-const catalog = ref({ titles: [], potions: [], snacks: [] })
+const catalog = ref({ titles: [], sections: [] })
 const pending = ref([])
 const tab = ref('titles')
 const loading = ref(true)
 const error = ref('')
+
+const activeSection = computed(() => catalog.value.sections.find((s) => s.id === tab.value))
 
 async function load() {
   loading.value = true
@@ -41,10 +43,10 @@ async function selectTitle(titleId) {
   await auth.refreshProfile()
 }
 
-async function buyConsumable(category, item) {
+async function buyConsumable(item) {
   error.value = ''
   try {
-    await shopApi.buyConsumable(category, item.id)
+    await shopApi.buyConsumable(item.id)
     await auth.refreshProfile()
     await load()
   } catch (e) {
@@ -72,10 +74,17 @@ onMounted(load)
 
     <div v-if="error" class="alert alert-err">{{ error }}</div>
 
-    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem">
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap">
       <button class="btn btn-sm" :class="tab === 'titles' ? 'btn-primary' : 'btn-outline'" @click="tab = 'titles'">🏷️ Звания</button>
-      <button class="btn btn-sm" :class="tab === 'potions' ? 'btn-primary' : 'btn-outline'" @click="tab = 'potions'">🧪 Зелья</button>
-      <button class="btn btn-sm" :class="tab === 'snacks' ? 'btn-primary' : 'btn-outline'" @click="tab = 'snacks'">🍪 Пойки</button>
+      <button
+        v-for="s in catalog.sections"
+        :key="s.id"
+        class="btn btn-sm"
+        :class="tab === s.id ? 'btn-primary' : 'btn-outline'"
+        @click="tab = s.id"
+      >
+        {{ s.icon }} {{ s.name }}
+      </button>
     </div>
 
     <div v-if="loading" class="grid grid-cards">
@@ -93,19 +102,11 @@ onMounted(load)
         </div>
       </div>
 
-      <div v-else-if="tab === 'potions'" class="grid grid-cards">
-        <div v-for="p in catalog.potions" :key="p.id" class="card" style="text-align: center">
-          <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ p.name }}</div>
-          <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ p.price }}</div>
-          <button class="btn btn-primary btn-sm" @click="buyConsumable('POTION', p)">Купить</button>
-        </div>
-      </div>
-
-      <div v-else class="grid grid-cards">
-        <div v-for="s in catalog.snacks" :key="s.id" class="card" style="text-align: center">
-          <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ s.name }}</div>
-          <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ s.price }}</div>
-          <button class="btn btn-primary btn-sm" @click="buyConsumable('SNACK', s)">Купить</button>
+      <div v-else-if="activeSection" class="grid grid-cards">
+        <div v-for="item in activeSection.items" :key="item.id" class="card" style="text-align: center">
+          <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ item.name }}</div>
+          <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ item.price }}</div>
+          <button class="btn btn-primary btn-sm" @click="buyConsumable(item)">Купить</button>
         </div>
       </div>
 
