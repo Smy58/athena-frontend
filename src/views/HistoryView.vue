@@ -4,6 +4,7 @@ import questsApi from '../api/quests'
 import reviewsApi from '../api/reviews'
 import scheduleApi from '../api/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import { formatDate, formatWeekday } from '../utils/date'
 
 const tab = ref('events')
 const completedQuests = ref([])
@@ -91,7 +92,7 @@ onMounted(load)
             <div class="title-display" style="font-size: 0.9rem">{{ e.name }}</div>
             <div style="font-size: 0.75rem; color: var(--t2); margin-top: 0.2rem">{{ e.meta }}</div>
           </div>
-          <div style="font-size: 0.72rem; color: var(--t3)">{{ e.day }} {{ e.date }}</div>
+          <div style="font-size: 0.72rem; color: var(--t3)">{{ formatWeekday(e.date) }} {{ formatDate(e.date) }}</div>
         </div>
 
         <div v-if="expandedId === reviewKey('EVENT', e.id)" style="margin-top: 1rem; border-top: 1px solid var(--b); padding-top: 1rem">
@@ -118,7 +119,7 @@ onMounted(load)
           <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer" @click="toggleExpand('QUEST', q.id)">
             <div>
               <div class="title-display" style="font-size: 0.9rem">{{ q.title }}</div>
-              <div style="font-size: 0.75rem; color: var(--t2); margin-top: 0.2rem">{{ q.date }} · {{ q.rewardValue }}</div>
+              <div style="font-size: 0.75rem; color: var(--t2); margin-top: 0.2rem">{{ formatDate(q.date) }} · {{ q.rewardValue }}</div>
             </div>
             <div style="font-size: 0.72rem; color: var(--t3)">✓ завершено</div>
           </div>

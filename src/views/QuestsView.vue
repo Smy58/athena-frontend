@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import questsApi from '../api/quests'
 import { useAuthStore } from '../stores/auth'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import { formatDate } from '../utils/date'
 
 const auth = useAuthStore()
 const quests = ref([])
@@ -92,7 +93,7 @@ onMounted(load)
       <div class="field"><label>Название задания</label><input v-model="form.title" placeholder="Зачистка старой шахты" /></div>
       <div class="field"><label>Описание</label><textarea v-model="form.description" placeholder="Опиши, что нужно сделать..."></textarea></div>
       <div class="grid" style="grid-template-columns: 1fr 1fr">
-        <div class="field"><label>Дата</label><input v-model="form.date" placeholder="напр. 12 июля" /></div>
+        <div class="field"><label>Дата</label><input v-model="form.date" type="date" /></div>
         <div class="field"><label>Время</label><input v-model="form.time" placeholder="напр. 18:00" /></div>
       </div>
       <div class="field">
@@ -126,7 +127,7 @@ onMounted(load)
         </div>
         <div style="font-size: 0.8rem; color: var(--t2); margin-bottom: 0.6rem">{{ q.description }}</div>
         <div style="font-size: 0.75rem; color: var(--t3); margin-bottom: 0.8rem">
-          📅 {{ q.date }} · 🕐 {{ q.time }} · автор {{ q.createdBy?.name }}
+          📅 {{ formatDate(q.date) }} · 🕐 {{ q.time }} · автор {{ q.createdBy?.name }}
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap">
           <button class="btn btn-sm" :class="isSignedUp(q) ? 'btn-outline' : 'btn-primary'" @click="toggleSignup(q)">

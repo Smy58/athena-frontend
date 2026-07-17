@@ -4,6 +4,7 @@ import scheduleApi from '../api/schedule'
 import { gameSeats, levelLabel } from '../utils/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
 import { useAuthStore } from '../stores/auth'
+import { formatDate } from '../utils/date'
 
 const auth = useAuthStore()
 const GAMES = ref([])
@@ -99,7 +100,7 @@ onMounted(async () => {
           <div class="title-display" style="font-size: 0.92rem; margin-bottom: 0.3rem">{{ g.title }}</div>
           <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.5rem">{{ g.shortDescription }}</div>
           <div style="font-size: 0.72rem; color: var(--t3)">
-            {{ g.masterIcon }} {{ g.master }} · 📅 {{ g.date }} · 🕐 {{ g.startTime }}–{{ g.endTime }} · {{ levelLabel(g) }}
+            {{ g.masterIcon }} {{ g.master }} · 📅 {{ formatDate(g.date) }} · 🕐 {{ g.startTime }}–{{ g.endTime }} · {{ levelLabel(g) }}
           </div>
         </div>
       </div>
@@ -115,7 +116,7 @@ onMounted(async () => {
         </div>
         <div style="font-size: 0.85rem; color: var(--t2); line-height: 1.7; margin-bottom: 1rem">{{ selected.shortDescription }}</div>
         <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem">
-          <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Дата и время</div><div style="font-size: 0.85rem">{{ selected.date }} · {{ selected.startTime }}–{{ selected.endTime }}</div></div>
+          <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Дата и время</div><div style="font-size: 0.85rem">{{ formatDate(selected.date) }} · {{ selected.startTime }}–{{ selected.endTime }}</div></div>
           <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Уровень</div><div style="font-size: 0.85rem">{{ levelLabel(selected) }}</div></div>
           <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Места</div><div style="font-size: 0.85rem" :style="{ color: gameSeats(selected).color }">{{ gameSeats(selected).label }}</div></div>
           <div class="card" style="padding: 0.75rem"><div style="font-size: 0.68rem; color: var(--t3)">Стоимость</div><div style="font-size: 0.85rem">{{ selected.price ? selected.price + ' ' + selected.currency : 'Бесплатно' }}</div></div>
