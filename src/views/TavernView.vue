@@ -79,7 +79,7 @@ onMounted(load)
   <div class="wrap" :style="{ paddingBottom: cartCount > 0 ? '13rem' : null }">
     <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem">
       <div>
-        <h1 class="title-display" style="font-size: 1.4rem">🍺 Таверна</h1>
+        <h1 class="title-display" style="font-size: 1.4rem">🍺 Костер и Котел</h1>
         <p style="font-size: 0.82rem; color: var(--t2); margin-top: 0.3rem">Напитки, еда и другие расходники</p>
       </div>
       <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap">

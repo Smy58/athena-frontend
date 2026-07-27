@@ -39,9 +39,9 @@ onMounted(load)
 
 <template>
   <div class="wrap">
-    <RouterLink to="/tavern" style="font-size: 0.8rem; color: var(--t2); display: inline-block; margin-bottom: 1rem">← Таверна</RouterLink>
+    <RouterLink to="/tavern" style="font-size: 0.8rem; color: var(--t2); display: inline-block; margin-bottom: 1rem">← Костер и Котел</RouterLink>
     <h1 class="title-display" style="font-size: 1.4rem; margin-bottom: 0.3rem">📜 История заказов</h1>
-    <p style="font-size: 0.82rem; color: var(--t2); margin-bottom: 1.5rem">Все напитки и еда, которые ты заказал в Таверне</p>
+    <p style="font-size: 0.82rem; color: var(--t2); margin-bottom: 1.5rem">Все напитки и еда, которые ты заказал в «Костер и Котел»</p>
 
     <div v-if="loading" class="grid" style="gap: 0.75rem">
       <SkeletonCard v-for="n in 4" :key="n" :lines="1" />
