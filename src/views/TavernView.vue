@@ -13,6 +13,7 @@ const error = ref('')
 
 const cart = ref({}) // itemId -> quantity
 const paymentMethod = ref('finiki')
+const orderComment = ref('')
 const checkingOut = ref(false)
 
 const activeSection = computed(() => sections.value.find((s) => s.id === tab.value))
@@ -61,8 +62,9 @@ async function checkout() {
   }
   checkingOut.value = true
   try {
-    await shopApi.checkout(cartLines.value.map((l) => ({ itemId: l.item.id, quantity: l.qty })), 'FINIKI')
+    await shopApi.checkout(cartLines.value.map((l) => ({ itemId: l.item.id, quantity: l.qty })), 'FINIKI', orderComment.value.trim() || undefined)
     cart.value = {}
+    orderComment.value = ''
     await auth.refreshProfile()
     await load()
   } catch (e) {
@@ -76,7 +78,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div class="wrap" :style="{ paddingBottom: cartCount > 0 ? '13rem' : null }">
+  <div class="wrap" :style="{ paddingBottom: cartCount > 0 ? '16rem' : null }">
     <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem">
       <div>
         <h1 class="title-display" style="font-size: 1.4rem">🍺 Костер и Котел</h1>
@@ -128,6 +130,12 @@ onMounted(load)
       <div style="font-size: 0.8rem; color: var(--t2); display: flex; flex-direction: column; gap: 0.15rem; max-height: 4.5rem; overflow-y: auto">
         <div v-for="l in cartLines" :key="l.item.id">{{ l.item.name }} ×{{ l.qty }}</div>
       </div>
+      <input
+        v-model="orderComment"
+        maxlength="300"
+        placeholder="💬 Комментарий: аллергии, пожелания..."
+        style="width: 100%; background: var(--bg2); border: 1px solid var(--b); border-radius: var(--r); padding: 0.5rem 0.75rem; color: var(--t); font-size: 0.8rem; outline: none"
+      />
       <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap">
         <label style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; cursor: pointer">
           <input type="radio" value="finiki" v-model="paymentMethod" /> 🪙 Финики

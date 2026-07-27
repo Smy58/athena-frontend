@@ -58,6 +58,7 @@ onMounted(load)
           <span class="dot">·</span>
           <span>{{ formatDateTime(p.createdAt) }}</span>
         </div>
+        <div v-if="p.comment" style="font-size: 0.8rem; color: var(--t2); font-style: italic">💬 {{ p.comment }}</div>
       </div>
     </div>
   </div>
