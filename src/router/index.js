@@ -37,6 +37,18 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/news',
+    name: 'news',
+    component: () => import('../views/NewsView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/news/:id',
+    name: 'news-detail',
+    component: () => import('../views/NewsDetailView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/guild',
     name: 'guild',
     component: () => import('../views/GuildView.vue'),

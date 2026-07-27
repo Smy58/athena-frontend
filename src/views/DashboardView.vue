@@ -14,6 +14,7 @@ const guildStatus = computed(() => {
 })
 
 const cards = computed(() => [
+  { to: '/news', icon: '📰', title: 'Новости', sub: 'Объявления клуба' },
   { to: '/characters', icon: '⚔️', title: 'Персонажи', sub: `${characterCount.value} персонажей` },
   { to: '/quests', icon: '📋', title: 'Доска заданий', sub: 'Записывайся и получай награды' },
   { to: '/guild', icon: '🏛️', title: 'Гильдия', sub: guildStatus.value },
