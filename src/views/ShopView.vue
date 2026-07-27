@@ -39,11 +39,6 @@ async function buyTitle(title) {
   }
 }
 
-async function selectTitle(titleId) {
-  await shopApi.selectTitle(titleId)
-  await auth.refreshProfile()
-}
-
 onMounted(load)
 </script>
 
@@ -56,6 +51,7 @@ onMounted(load)
       </div>
       <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap">
         <div class="card" style="padding: 0.6rem 1rem; font-size: 0.9rem">🪙 {{ auth.user?.finiki ?? 0 }} фиников</div>
+        <RouterLink to="/backpack" class="btn btn-outline btn-sm">🎒 Рюкзак</RouterLink>
         <RouterLink to="/shop/history" class="btn btn-outline btn-sm">📜 История покупок</RouterLink>
       </div>
     </div>
@@ -84,8 +80,7 @@ onMounted(load)
           <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ t.name }}</div>
           <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ t.price }}</div>
           <button v-if="!owned(t.id)" class="btn btn-primary btn-sm" @click="buyTitle(t)">Купить</button>
-          <button v-else-if="auth.user?.activeTitle === t.id" class="btn btn-outline btn-sm" disabled>✓ Активно</button>
-          <button v-else class="btn btn-outline btn-sm" @click="selectTitle(t.id)">Сделать активным</button>
+          <button v-else class="btn btn-outline btn-sm" disabled>✓ Куплено</button>
         </div>
       </div>
     </template>

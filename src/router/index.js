@@ -61,6 +61,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/backpack',
+    name: 'backpack',
+    component: () => import('../views/BackpackView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/shop/history',
     name: 'shop-history',
     component: () => import('../views/ShopHistoryView.vue'),

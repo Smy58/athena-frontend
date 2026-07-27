@@ -22,6 +22,7 @@ const cards = computed(() => [
   { to: '/faq', icon: '❓', title: 'FAQ', sub: 'Ответы на частые вопросы' },
   { to: '/support', icon: '💬', title: 'Обратная связь', sub: 'Проблемы и предложения' },
   { to: '/shop', icon: '🛍️', title: 'Магазин', sub: `${auth.user?.finiki ?? 0} фиников` },
+  { to: '/backpack', icon: '🎒', title: 'Рюкзак', sub: 'То, что ты уже купил' },
   { to: '/tavern', icon: '🍺', title: 'Костер и Котел', sub: 'Напитки и еда' },
   { to: '/schedule', icon: '📅', title: 'Расписание игр', sub: 'Фильтруй и записывайся' },
   { to: '/masters', icon: '🧙', title: 'Мастера', sub: 'Каталог и профили' },
