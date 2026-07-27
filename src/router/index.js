@@ -49,9 +49,21 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/shop/history',
+    name: 'shop-history',
+    component: () => import('../views/ShopHistoryView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/tavern',
     name: 'tavern',
     component: () => import('../views/TavernView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/tavern/history',
+    name: 'tavern-history',
+    component: () => import('../views/TavernHistoryView.vue'),
     meta: { requiresAuth: true },
   },
   {
