@@ -63,7 +63,7 @@ async function checkout() {
   }
   checkingOut.value = true
   try {
-    await shopApi.checkout(cartLines.value.map((l) => ({ itemId: l.item.id, quantity: l.qty })))
+    await shopApi.checkout(cartLines.value.map((l) => ({ itemId: l.item.id, quantity: l.qty })), 'FINIKI')
     cart.value = {}
     await auth.refreshProfile()
     await load()
@@ -141,7 +141,7 @@ onMounted(load)
                 <td style="color: var(--t)">{{ p.name }}</td>
                 <td>×{{ p.quantity }}</td>
                 <td>🪙 {{ p.price * p.quantity }}</td>
-                <td>{{ p.redeemed ? '✅ выдано' : '⏳ ожидает выдачи' }}</td>
+                <td>{{ p.cancelled ? '❌ отменён' : p.redeemed ? '✅ выдано' : '⏳ ожидает выдачи' }}</td>
                 <td style="color: var(--t2); font-size: 0.85rem">{{ formatDate(p.createdAt) }}</td>
               </tr>
             </tbody>
