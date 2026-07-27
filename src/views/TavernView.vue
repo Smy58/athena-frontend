@@ -112,9 +112,9 @@ onMounted(load)
           <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ item.name }}</div>
           <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ item.price }}</div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem">
-            <button class="btn btn-outline btn-sm" style="width: 2rem; padding: 0" :disabled="qty(item.id) === 0" @click="dec(item)">−</button>
+            <button class="btn btn-outline btn-sm" style="width: 2rem; padding: 0; justify-content: center" :disabled="qty(item.id) === 0" @click="dec(item)">−</button>
             <span style="min-width: 1.5rem; font-weight: 600">{{ qty(item.id) }}</span>
-            <button class="btn btn-primary btn-sm" style="width: 2rem; padding: 0" @click="inc(item)">+</button>
+            <button class="btn btn-primary btn-sm" style="width: 2rem; padding: 0; justify-content: center" @click="inc(item)">+</button>
           </div>
         </div>
       </div>
