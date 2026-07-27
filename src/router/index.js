@@ -49,6 +49,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/tavern',
+    name: 'tavern',
+    component: () => import('../views/TavernView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/support',
     name: 'support',
     component: () => import('../views/SupportView.vue'),
