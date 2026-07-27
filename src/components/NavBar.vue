@@ -10,13 +10,7 @@ const mobileOpen = ref(false)
 const loggedInLinks = [
   { to: '/dashboard', label: '🏰 Кабинет' },
   { to: '/characters', label: '⚔️ Персонажи' },
-  { to: '/quests', label: '📋 Доска заданий' },
-  { to: '/guild', label: '🏛️ Гильдия' },
   { to: '/schedule', label: '📅 Расписание игр' },
-  { to: '/masters', label: '🧙 Мастера' },
-  { to: '/history', label: '📜 История' },
-  { to: '/faq', label: '❓ FAQ' },
-  { to: '/support', label: '💬 Обратная связь' },
 ]
 
 function toggleMobile() {
@@ -48,8 +42,7 @@ function handleLogout() {
     </div>
 
     <div v-else class="nav-links">
-      <RouterLink to="/dashboard" class="btn btn-ghost">Кабинет</RouterLink>
-      <RouterLink to="/characters" class="btn btn-ghost">Персонажи</RouterLink>
+      <RouterLink v-for="link in loggedInLinks" :key="link.to" :to="link.to" class="btn btn-ghost">{{ link.label }}</RouterLink>
       <span class="nav-user">{{ auth.user?.name }}</span>
       <button class="btn btn-outline btn-sm" @click="handleLogout">Выйти</button>
     </div>
