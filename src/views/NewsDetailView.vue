@@ -38,7 +38,7 @@ async function submitComment() {
   posting.value = true
   try {
     const comment = await newsApi.addComment(post.value.id, commentText.value.trim())
-    post.value.comments.push(comment)
+    post.value.comments.unshift(comment)
     commentText.value = ''
   } finally {
     posting.value = false
