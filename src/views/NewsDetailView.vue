@@ -1,16 +1,27 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useReactionsStore } from '../stores/reactions'
 import newsApi from '../api/news'
 import UserName from '../components/UserName.vue'
 
 const route = useRoute()
 const auth = useAuthStore()
+const reactionsStore = useReactionsStore()
 const post = ref(null)
 const loading = ref(true)
 const commentText = ref('')
 const posting = ref(false)
+
+const myReactionSvg = computed(() => {
+  const id = auth.user?.activeReaction
+  return id ? reactionsStore.map[id]?.svg : null
+})
+
+function reactedByMe(entity) {
+  return entity.reactions?.some((r) => r.reactedByMe)
+}
 
 async function load() {
   loading.value = true
@@ -31,6 +42,16 @@ async function toggleCommentLike(c) {
   const { liked } = await newsApi.toggleCommentLike(c.id)
   c.likedByMe = liked
   c.likeCount += liked ? 1 : -1
+}
+
+async function toggleReaction() {
+  const { reactions } = await newsApi.toggleReaction(post.value.id)
+  post.value.reactions = reactions
+}
+
+async function toggleCommentReaction(c) {
+  const { reactions } = await newsApi.toggleCommentReaction(c.id)
+  c.reactions = reactions
 }
 
 async function submitComment() {
@@ -60,7 +81,10 @@ function formatDate(d) {
 }
 
 watch(() => route.params.id, load)
-onMounted(load)
+onMounted(() => {
+  load()
+  reactionsStore.ensureLoaded()
+})
 </script>
 
 <template>
@@ -80,9 +104,28 @@ onMounted(load)
         <h1 class="title-display" style="font-size: 1.25rem; margin-bottom: 0.5rem">{{ post.title }}</h1>
         <p style="font-size: 0.88rem; color: var(--t2); white-space: pre-wrap; margin-bottom: 0.75rem">{{ post.description }}</p>
         <div style="font-size: 0.75rem; color: var(--t3); margin-bottom: 0.75rem">{{ post.author.login }} · {{ formatDate(post.createdAt) }}</div>
-        <button class="btn btn-sm" :class="post.likedByMe ? 'btn-primary' : 'btn-outline'" @click="toggleLike">
-          ❤️ {{ post.likeCount }}
-        </button>
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
+          <button class="btn btn-sm" :class="post.likedByMe ? 'btn-primary' : 'btn-outline'" @click="toggleLike">
+            ❤️ {{ post.likeCount }}
+          </button>
+          <button
+            v-if="myReactionSvg"
+            class="btn btn-sm"
+            :class="reactedByMe(post) ? 'btn-primary' : 'btn-outline'"
+            style="padding: 0.35rem 0.55rem"
+            @click="toggleReaction"
+          >
+            <span class="reaction-icon" v-html="myReactionSvg"></span>
+          </button>
+          <span
+            v-for="rx in post.reactions"
+            :key="rx.reactionId"
+            class="status-pill status-pending"
+            style="display: inline-flex; align-items: center; gap: 0.3rem"
+          >
+            <span class="reaction-icon" v-html="rx.svg"></span>{{ rx.count }}
+          </span>
+        </div>
       </div>
 
       <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.75rem">Комментарии ({{ post.comments.length }})</div>
@@ -117,9 +160,28 @@ onMounted(load)
             <button v-if="isMine(c)" class="btn btn-outline btn-sm" @click="removeComment(c)">Удалить</button>
           </div>
           <p style="font-size: 0.87rem; color: var(--t2); margin: 0.5rem 0">{{ c.text }}</p>
-          <button class="btn btn-sm" :class="c.likedByMe ? 'btn-primary' : 'btn-outline'" @click="toggleCommentLike(c)">
-            ❤️ {{ c.likeCount }}
-          </button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
+            <button class="btn btn-sm" :class="c.likedByMe ? 'btn-primary' : 'btn-outline'" @click="toggleCommentLike(c)">
+              ❤️ {{ c.likeCount }}
+            </button>
+            <button
+              v-if="myReactionSvg"
+              class="btn btn-sm"
+              :class="reactedByMe(c) ? 'btn-primary' : 'btn-outline'"
+              style="padding: 0.35rem 0.55rem"
+              @click="toggleCommentReaction(c)"
+            >
+              <span class="reaction-icon" v-html="myReactionSvg"></span>
+            </button>
+            <span
+              v-for="rx in c.reactions"
+              :key="rx.reactionId"
+              class="status-pill status-pending"
+              style="display: inline-flex; align-items: center; gap: 0.3rem"
+            >
+              <span class="reaction-icon" v-html="rx.svg"></span>{{ rx.count }}
+            </span>
+          </div>
         </div>
       </div>
     </template>

@@ -7,10 +7,15 @@ import SkeletonCard from '../components/SkeletonCard.vue'
 
 const auth = useAuthStore()
 const titleSections = ref([])
+const reactions = ref([])
 const tab = ref(null)
 const loading = ref(true)
 const error = ref('')
 
+const tabs = computed(() => [
+  ...titleSections.value.map((s) => ({ id: s.id, name: s.name, icon: s.icon })),
+  ...(reactions.value.length ? [{ id: '__reactions__', name: 'Реакции', icon: '🎭' }] : []),
+])
 const activeSection = computed(() => titleSections.value.find((s) => s.id === tab.value))
 
 async function load() {
@@ -18,7 +23,8 @@ async function load() {
   try {
     const cat = await shopApi.catalog()
     titleSections.value = cat.titleSections
-    if (!tab.value && titleSections.value.length) tab.value = titleSections.value[0].id
+    reactions.value = cat.reactions
+    if (!tab.value && tabs.value.length) tab.value = tabs.value[0].id
   } finally {
     loading.value = false
   }
@@ -26,6 +32,10 @@ async function load() {
 
 function owned(titleId) {
   return auth.user?.titles?.includes(titleId)
+}
+
+function ownedReaction(reactionId) {
+  return auth.user?.reactions?.includes(reactionId)
 }
 
 async function buyTitle(title) {
@@ -36,6 +46,17 @@ async function buyTitle(title) {
     await load()
   } catch (e) {
     error.value = e.response?.data?.message || 'Не удалось купить звание'
+  }
+}
+
+async function buyReaction(reaction) {
+  error.value = ''
+  try {
+    await shopApi.buyReaction(reaction.id)
+    await auth.refreshProfile()
+    await load()
+  } catch (e) {
+    error.value = e.response?.data?.message || 'Не удалось купить реакцию'
   }
 }
 
@@ -63,9 +84,9 @@ onMounted(load)
     </div>
 
     <template v-else>
-      <div v-if="titleSections.length > 1" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap">
+      <div v-if="tabs.length > 1" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap">
         <button
-          v-for="s in titleSections"
+          v-for="s in tabs"
           :key="s.id"
           class="btn btn-sm"
           :class="tab === s.id ? 'btn-primary' : 'btn-outline'"
@@ -75,7 +96,17 @@ onMounted(load)
         </button>
       </div>
 
-      <div v-if="activeSection" class="grid grid-cards">
+      <div v-if="tab === '__reactions__'" class="grid grid-cards">
+        <div v-for="r in reactions" :key="r.id" class="card" style="text-align: center">
+          <div class="reaction-icon" style="width: 3.2rem; height: 3.2rem; margin: 0 auto 0.6rem" v-html="r.svg"></div>
+          <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ r.name }}</div>
+          <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ r.price }}</div>
+          <button v-if="!ownedReaction(r.id)" class="btn btn-primary btn-sm" @click="buyReaction(r)">Купить</button>
+          <button v-else class="btn btn-outline btn-sm" disabled>✓ Куплено</button>
+        </div>
+      </div>
+
+      <div v-else-if="activeSection" class="grid grid-cards">
         <div v-for="t in activeSection.titles" :key="t.id" class="card" style="text-align: center">
           <div class="title-display" style="font-size: 0.9rem; margin-bottom: 0.4rem">{{ t.name }}</div>
           <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.8rem">🪙 {{ t.price }}</div>

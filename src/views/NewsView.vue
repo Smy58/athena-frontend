@@ -1,11 +1,20 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import { useReactionsStore } from '../stores/reactions'
 import newsApi from '../api/news'
 import SkeletonCard from '../components/SkeletonCard.vue'
 
+const auth = useAuthStore()
+const reactionsStore = useReactionsStore()
 const posts = ref([])
 const loading = ref(true)
+
+const myReactionSvg = computed(() => {
+  const id = auth.user?.activeReaction
+  return id ? reactionsStore.map[id]?.svg : null
+})
 
 async function load() {
   loading.value = true
@@ -22,11 +31,23 @@ async function toggleLike(p) {
   p.likeCount += liked ? 1 : -1
 }
 
+async function toggleReaction(p) {
+  const { reactions } = await newsApi.toggleReaction(p.id)
+  p.reactions = reactions
+}
+
+function reactedByMe(p) {
+  return p.reactions?.some((r) => r.reactedByMe)
+}
+
 function formatDate(d) {
   return new Date(d).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' })
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  reactionsStore.ensureLoaded()
+})
 </script>
 
 <template>
@@ -53,10 +74,27 @@ onMounted(load)
         <p style="font-size: 0.85rem; color: var(--t2); margin-bottom: 0.75rem; white-space: pre-wrap">{{ p.description }}</p>
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem">
           <div style="font-size: 0.75rem; color: var(--t3)">{{ p.author.login }} · {{ formatDate(p.createdAt) }}</div>
-          <div style="display: flex; gap: 0.5rem">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
             <button class="btn btn-sm" :class="p.likedByMe ? 'btn-primary' : 'btn-outline'" @click="toggleLike(p)">
               ❤️ {{ p.likeCount }}
             </button>
+            <button
+              v-if="myReactionSvg"
+              class="btn btn-sm"
+              :class="reactedByMe(p) ? 'btn-primary' : 'btn-outline'"
+              style="padding: 0.35rem 0.55rem"
+              @click="toggleReaction(p)"
+            >
+              <span class="reaction-icon" v-html="myReactionSvg"></span>
+            </button>
+            <span
+              v-for="rx in p.reactions"
+              :key="rx.reactionId"
+              class="status-pill status-pending"
+              style="display: inline-flex; align-items: center; gap: 0.3rem"
+            >
+              <span class="reaction-icon" v-html="rx.svg"></span>{{ rx.count }}
+            </span>
             <RouterLink :to="`/news/${p.id}`" class="btn btn-outline btn-sm">💬 {{ p.commentCount }}</RouterLink>
           </div>
         </div>

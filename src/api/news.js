@@ -7,4 +7,6 @@ export default {
   addComment: (id, text) => client.post(`/news/${id}/comments`, { text }).then((r) => r.data),
   removeComment: (commentId) => client.delete(`/news/comments/${commentId}`).then((r) => r.data),
   toggleCommentLike: (commentId) => client.post(`/news/comments/${commentId}/like`).then((r) => r.data),
+  toggleReaction: (id) => client.post(`/news/${id}/reaction`).then((r) => r.data),
+  toggleCommentReaction: (commentId) => client.post(`/news/comments/${commentId}/reaction`).then((r) => r.data),
 }
