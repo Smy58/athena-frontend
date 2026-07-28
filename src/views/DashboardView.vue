@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import charactersApi from '../api/characters'
 import guildApi from '../api/guild'
+import UserName from '../components/UserName.vue'
 
 const auth = useAuthStore()
 const characterCount = ref(0)
@@ -41,7 +42,7 @@ onMounted(async () => {
       Добро пожаловать обратно
     </p>
     <h1 class="title-display" style="font-size: 1.6rem; margin-bottom: 1.75rem">
-      Привет, <span class="accent">{{ auth.user?.name }}</span>
+      Привет, <span class="accent"><UserName :name="auth.user?.name" :title-id="auth.user?.activeTitle" /></span>
     </h1>
 
     <div class="grid grid-cards">

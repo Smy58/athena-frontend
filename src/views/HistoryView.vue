@@ -4,6 +4,7 @@ import questsApi from '../api/quests'
 import reviewsApi from '../api/reviews'
 import scheduleApi from '../api/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import UserName from '../components/UserName.vue'
 import { formatDate, formatWeekday } from '../utils/date'
 
 const tab = ref('events')
@@ -126,7 +127,7 @@ onMounted(load)
 
           <div v-if="expandedId === reviewKey('QUEST', q.id)" style="margin-top: 1rem; border-top: 1px solid var(--b); padding-top: 1rem">
             <div v-for="(r, i) in reviewsCache[reviewKey('QUEST', q.id)]" :key="i" style="margin-bottom: 0.6rem">
-              <div style="font-size: 0.78rem; color: var(--pp)">{{ r.author?.name }} · {{ stars(r.rating) }}</div>
+              <div style="font-size: 0.78rem; color: var(--pp)"><UserName :name="r.author?.name" :title-id="r.author?.activeTitle" /> · {{ stars(r.rating) }}</div>
               <div style="font-size: 0.8rem; color: var(--t2)">{{ r.text }}</div>
             </div>
             <div style="display: flex; gap: 0.3rem; margin-bottom: 0.5rem">

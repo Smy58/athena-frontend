@@ -5,6 +5,7 @@ import usersApi from '../api/users'
 import guildApi from '../api/guild'
 import { guildRankInfo } from '../utils/guild'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import UserName from '../components/UserName.vue'
 
 const auth = useAuthStore()
 const GUILDS = ref({})
@@ -132,7 +133,7 @@ onMounted(async () => {
       <div v-else class="grid grid-cards">
         <div v-for="(m, i) in members" :key="m.id" class="card" style="text-align: center">
           <div style="font-size: 1.2rem; margin-bottom: 0.3rem">{{ i === 0 ? '👑' : '⚔️' }}</div>
-          <div class="title-display" style="font-size: 0.9rem">{{ m.name }}</div>
+          <div class="title-display" style="font-size: 0.9rem"><UserName :name="m.name" :title-id="m.activeTitle" /></div>
           <div style="font-size: 0.75rem; color: var(--t2)">💎 {{ m.fameStones }} · {{ m.completedContracts }} контрактов</div>
         </div>
       </div>

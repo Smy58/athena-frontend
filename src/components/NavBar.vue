@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import UserName from './UserName.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -43,7 +44,7 @@ function handleLogout() {
 
     <div v-else class="nav-links">
       <RouterLink v-for="link in loggedInLinks" :key="link.to" :to="link.to" class="btn btn-ghost">{{ link.label }}</RouterLink>
-      <span class="nav-user">{{ auth.user?.name }}</span>
+      <span class="nav-user"><UserName :name="auth.user?.name" :title-id="auth.user?.activeTitle" /></span>
       <button class="btn btn-outline btn-sm" @click="handleLogout">Выйти</button>
     </div>
 

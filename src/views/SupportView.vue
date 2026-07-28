@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import supportApi from '../api/support'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import UserName from '../components/UserName.vue'
 
 const auth = useAuthStore()
 const view = ref('list')
@@ -96,7 +97,7 @@ onMounted(loadTopics)
             {{ t.category === 'PROBLEM' ? '🐛 Проблема' : '💡 Предложение' }}
           </div>
           <div class="title-display" style="font-size: 0.92rem; margin-bottom: 0.4rem">{{ t.title }}</div>
-          <div style="font-size: 0.75rem; color: var(--t2)">{{ t.createdBy?.name }} · {{ t.messages?.length ?? 0 }} сообщений</div>
+          <div style="font-size: 0.75rem; color: var(--t2)"><UserName :name="t.createdBy?.name" :title-id="t.createdBy?.activeTitle" /> · {{ t.messages?.length ?? 0 }} сообщений</div>
         </div>
       </div>
     </template>
@@ -131,7 +132,7 @@ onMounted(loadTopics)
         </div>
         <div class="card" style="margin-bottom: 1rem; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem">
           <div v-for="(m, i) in activeTopic.messages" :key="i">
-            <div style="font-size: 0.72rem; color: var(--t3); margin-bottom: 0.2rem">{{ m.author?.name }}</div>
+            <div style="font-size: 0.72rem; color: var(--t3); margin-bottom: 0.2rem"><UserName :name="m.author?.name" :title-id="m.author?.activeTitle" /></div>
             <div style="font-size: 0.85rem; color: var(--t); background: var(--bg2); border-radius: var(--r); padding: 0.6rem 0.8rem">{{ m.text }}</div>
           </div>
         </div>

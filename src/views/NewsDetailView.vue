@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import newsApi from '../api/news'
+import UserName from '../components/UserName.vue'
 
 const route = useRoute()
 const auth = useAuthStore()
@@ -107,7 +108,7 @@ onMounted(load)
         >
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap">
             <div style="font-size: 0.85rem">
-              <span style="color: var(--t)">{{ c.authorName }}</span>
+              <span style="color: var(--t)"><UserName :name="c.authorName" :title-id="c.authorTitleId" /></span>
               <span v-if="c.isStaff" class="status-pill status-pending" style="margin-left: 0.4rem">
                 {{ c.authorRole === 'MASTER' ? '🧙 Мастер' : '🛡️ Админ' }}
               </span>

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import questsApi from '../api/quests'
 import { useAuthStore } from '../stores/auth'
 import SkeletonCard from '../components/SkeletonCard.vue'
+import UserName from '../components/UserName.vue'
 import { formatDate } from '../utils/date'
 
 const auth = useAuthStore()
@@ -127,7 +128,7 @@ onMounted(load)
         </div>
         <div style="font-size: 0.8rem; color: var(--t2); margin-bottom: 0.6rem">{{ q.description }}</div>
         <div style="font-size: 0.75rem; color: var(--t3); margin-bottom: 0.8rem">
-          📅 {{ formatDate(q.date) }} · 🕐 {{ q.time }} · автор {{ q.createdBy?.name }}
+          📅 {{ formatDate(q.date) }} · 🕐 {{ q.time }} · автор <UserName :name="q.createdBy?.name" :title-id="q.createdBy?.activeTitle" />
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap">
           <button class="btn btn-sm" :class="isSignedUp(q) ? 'btn-outline' : 'btn-primary'" @click="toggleSignup(q)">
