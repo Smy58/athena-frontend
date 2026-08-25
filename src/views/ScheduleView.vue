@@ -106,7 +106,7 @@ onMounted(async () => {
           <div class="title-display" style="font-size: 0.92rem; margin-bottom: 0.3rem">{{ g.title }}</div>
           <div style="font-size: 0.78rem; color: var(--t2); margin-bottom: 0.5rem">{{ g.shortDescription }}</div>
           <div style="font-size: 0.72rem; color: var(--t3)">
-            {{ g.masterIcon }} {{ g.master }} · 📅 {{ formatDate(g.date) }} · 🕐 {{ g.startTime }}–{{ g.endTime }} · {{ levelLabel(g) }}
+            {{ g.master.icon }} {{ g.master.name }} · 📅 {{ formatDate(g.date) }} · 🕐 {{ g.startTime }}–{{ g.endTime }} · {{ levelLabel(g) }}
           </div>
         </div>
       </div>
@@ -124,7 +124,7 @@ onMounted(async () => {
         <div style="text-align: center; margin-bottom: 1.25rem">
           <span style="font-size: 0.72rem; color: var(--pp)">{{ selected.format }} · {{ selected.gameSystem }}</span>
           <div class="title-display" style="font-size: 1.15rem; margin-top: 0.3rem">{{ selected.title }}</div>
-          <div style="font-size: 0.78rem; color: var(--t2); margin-top: 0.3rem">{{ selected.masterIcon }} Мастер: {{ selected.master }}</div>
+          <div style="font-size: 0.78rem; color: var(--t2); margin-top: 0.3rem">{{ selected.master.icon }} Мастер: {{ selected.master.name }}</div>
         </div>
         <div style="font-size: 0.85rem; color: var(--t2); line-height: 1.7; margin-bottom: 1rem">{{ selected.shortDescription }}</div>
         <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem">
