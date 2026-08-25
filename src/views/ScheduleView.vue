@@ -93,6 +93,12 @@ onMounted(async () => {
       </div>
       <div v-else class="grid grid-cards">
         <div v-for="g in filtered" :key="g.id" class="card" style="cursor: pointer" @click="selected = g">
+          <img
+            v-if="g.imageUrl"
+            :src="g.imageUrl"
+            alt=""
+            style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--r); margin-bottom: 0.75rem"
+          />
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem">
             <span style="font-size: 0.7rem; color: var(--pp)">{{ g.format }}</span>
             <span style="font-size: 0.7rem" :style="{ color: gameSeats(g).color }">{{ gameSeats(g).label }}</span>
@@ -109,6 +115,12 @@ onMounted(async () => {
     <template v-else>
       <button class="btn btn-ghost" style="margin-bottom: 1rem" @click="selected = null">← Назад к списку</button>
       <div class="auth-card" style="max-width: 520px; margin: 0 auto">
+        <img
+          v-if="selected.imageUrl"
+          :src="selected.imageUrl"
+          alt=""
+          style="width: 100%; max-height: 260px; object-fit: cover; border-radius: var(--r); margin-bottom: 1rem"
+        />
         <div style="text-align: center; margin-bottom: 1.25rem">
           <span style="font-size: 0.72rem; color: var(--pp)">{{ selected.format }} · {{ selected.gameSystem }}</span>
           <div class="title-display" style="font-size: 1.15rem; margin-top: 0.3rem">{{ selected.title }}</div>
