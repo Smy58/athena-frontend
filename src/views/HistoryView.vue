@@ -98,7 +98,7 @@ onMounted(load)
 
         <div v-if="expandedId === reviewKey('EVENT', e.id)" style="margin-top: 1rem; border-top: 1px solid var(--b); padding-top: 1rem">
           <div v-for="(r, i) in reviewsCache[reviewKey('EVENT', e.id)]" :key="i" style="margin-bottom: 0.6rem">
-            <div style="font-size: 0.78rem; color: var(--pp)">{{ r.author?.name }} · {{ stars(r.rating) }}</div>
+            <div style="font-size: 0.78rem; color: var(--pp)">{{ r.author?.name || 'Удалённый пользователь' }} · {{ stars(r.rating) }}</div>
             <div style="font-size: 0.8rem; color: var(--t2)">{{ r.text }}</div>
           </div>
           <div style="display: flex; gap: 0.3rem; margin-bottom: 0.5rem">
