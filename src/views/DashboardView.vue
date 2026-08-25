@@ -16,17 +16,17 @@ const guildStatus = computed(() => {
 
 const cards = computed(() => [
   { to: '/news', icon: '📰', title: 'Новости', sub: 'Объявления клуба' },
+  { to: '/schedule', icon: '📅', title: 'Расписание игр', sub: 'Фильтруй и записывайся' },
   { to: '/characters', icon: '⚔️', title: 'Персонажи', sub: `${characterCount.value} персонажей` },
+  { to: '/masters', icon: '🧙', title: 'Мастера', sub: 'Каталог и профили' },
   { to: '/quests', icon: '📋', title: 'Доска заданий', sub: 'Записывайся и получай награды' },
   { to: '/guild', icon: '🏛️', title: 'Гильдия', sub: guildStatus.value },
-  { to: '/history', icon: '📜', title: 'История', sub: 'Прошедшие игры и задания' },
-  { to: '/faq', icon: '❓', title: 'FAQ', sub: 'Ответы на частые вопросы' },
-  { to: '/support', icon: '💬', title: 'Обратная связь', sub: 'Проблемы и предложения' },
   { to: '/shop', icon: '🛍️', title: 'Магазин', sub: `${auth.user?.finiki ?? 0} фиников` },
-  { to: '/backpack', icon: '🎒', title: 'Рюкзак', sub: 'То, что ты уже купил' },
   { to: '/tavern', icon: '🍺', title: 'Костер и Котел', sub: 'Напитки и еда' },
-  { to: '/schedule', icon: '📅', title: 'Расписание игр', sub: 'Фильтруй и записывайся' },
-  { to: '/masters', icon: '🧙', title: 'Мастера', sub: 'Каталог и профили' },
+  { to: '/backpack', icon: '🎒', title: 'Рюкзак', sub: 'То, что ты уже купил' },
+  { to: '/history', icon: '📜', title: 'История', sub: 'Прошедшие игры и задания' },
+  { to: '/support', icon: '💬', title: 'Обратная связь', sub: 'Проблемы и предложения' },
+  { to: '/faq', icon: '❓', title: 'FAQ', sub: 'Ответы на частые вопросы' },
 ])
 
 onMounted(async () => {
