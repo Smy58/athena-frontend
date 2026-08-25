@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import scheduleApi from '../api/schedule'
 import { gameSeats, levelLabel } from '../utils/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
@@ -7,6 +8,8 @@ import { useAuthStore } from '../stores/auth'
 import { formatDate } from '../utils/date'
 
 const auth = useAuthStore()
+const route = useRoute()
+const router = useRouter()
 const GAMES = ref([])
 const GAME_FORMATS = ref([])
 const GAME_SYSTEMS = ref([])
@@ -32,6 +35,27 @@ const filtered = computed(() =>
 function isSignedUp(game) {
   return game.signups?.some((s) => s.userId === auth.user?.id)
 }
+
+// Deep link support (e.g. clicked from a master's profile) — /schedule/:id
+// opens straight into that game's detail view.
+function applySelectionFromRoute() {
+  const id = route.params.id
+  selected.value = id ? GAMES.value.find((g) => String(g.id) === id) ?? null : null
+}
+
+function openGame(game) {
+  selected.value = game
+}
+
+function closeGame() {
+  if (route.params.id) {
+    router.push({ name: 'schedule' })
+  } else {
+    selected.value = null
+  }
+}
+
+watch(() => route.params.id, applySelectionFromRoute)
 
 async function loadGames() {
   GAMES.value = await scheduleApi.games()
@@ -59,6 +83,7 @@ onMounted(async () => {
     GAMES.value = games
     GAME_FORMATS.value = meta.formats
     GAME_SYSTEMS.value = meta.systems
+    applySelectionFromRoute()
   } finally {
     loading.value = false
   }
@@ -92,7 +117,7 @@ onMounted(async () => {
         <SkeletonCard v-for="n in 6" :key="n" :lines="2" />
       </div>
       <div v-else class="grid grid-cards">
-        <div v-for="g in filtered" :key="g.id" class="card" style="cursor: pointer" @click="selected = g">
+        <div v-for="g in filtered" :key="g.id" class="card" style="cursor: pointer" @click="openGame(g)">
           <img
             v-if="g.imageUrl"
             :src="g.imageUrl"
@@ -113,7 +138,7 @@ onMounted(async () => {
     </template>
 
     <template v-else>
-      <button class="btn btn-ghost" style="margin-bottom: 1rem" @click="selected = null">← Назад к списку</button>
+      <button class="btn btn-ghost" style="margin-bottom: 1rem" @click="closeGame">← Назад к списку</button>
       <div class="auth-card" style="max-width: 520px; margin: 0 auto">
         <img
           v-if="selected.imageUrl"

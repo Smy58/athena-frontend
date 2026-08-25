@@ -114,6 +114,12 @@ const routes = [
     component: () => import('../views/ScheduleView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/schedule/:id',
+    name: 'schedule-game',
+    component: () => import('../views/ScheduleView.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({

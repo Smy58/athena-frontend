@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import mastersApi from '../api/masters'
 import scheduleApi from '../api/schedule'
 import SkeletonCard from '../components/SkeletonCard.vue'
 import { formatDate } from '../utils/date'
 
+const router = useRouter()
 const MASTERS = ref([])
 const loading = ref(true)
 const selected = ref(null)
@@ -23,6 +25,10 @@ const pastMasterGames = computed(() => {
   const today = new Date().toISOString().slice(0, 10)
   return masterGames.value.filter((g) => g.date.slice(0, 10) < today)
 })
+
+function openGame(game) {
+  router.push({ name: 'schedule-game', params: { id: game.id } })
+}
 
 async function openMaster(m) {
   selected.value = m
@@ -108,7 +114,12 @@ onMounted(async () => {
         <template v-else>
           <template v-if="upcomingMasterGames.length">
             <div class="title-display" style="font-size: 0.82rem; margin-bottom: 0.6rem">Предстоящие игры</div>
-            <div v-for="g in upcomingMasterGames" :key="g.id" style="font-size: 0.8rem; color: var(--t2); margin-bottom: 0.3rem">
+            <div
+              v-for="g in upcomingMasterGames"
+              :key="g.id"
+              style="font-size: 0.8rem; color: var(--t2); margin-bottom: 0.3rem; cursor: pointer"
+              @click="openGame(g)"
+            >
               {{ g.title }} — {{ formatDate(g.date) }}
             </div>
           </template>
