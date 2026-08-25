@@ -2,7 +2,7 @@ import client from './client'
 
 export default {
   meta: () => client.get('/schedule/meta').then((r) => r.data),
-  games: () => client.get('/schedule/games').then((r) => r.data),
+  games: () => client.get('/schedule/games/upcoming').then((r) => r.data),
   toggleSignup: (id) => client.post(`/schedule/games/${id}/signup`).then((r) => r.data),
   createGame: (data) => client.post('/schedule/games', data).then((r) => r.data),
   updateGame: (id, data) => client.patch(`/schedule/games/${id}`, data).then((r) => r.data),
